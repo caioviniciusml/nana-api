@@ -1,0 +1,48 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url = env("DATABASE_URL")
+}
+
+model Sensors {
+    id Int @id @default(autoincrement())
+    cribId String @map("crib_id")
+    tempSensorStatus Boolean @map("temp_sensor_status")
+    movSensorStatus Boolean @map("mov_sensor_status")
+    noiseSensorStatus Boolean @map("noise_sensor_status")
+    createdAt DateTime @map("created_at")
+    @@map("sensors")
+}
+
+model Measures {
+    id Int @id @default(autoincrement())
+    cribId String @map("crib_id")
+    temperature Float
+    movement Boolean
+    noise Int
+    createdAt DateTime @map("created_at")
+    @@map("measures")
+}
+
+model Settings {
+    id Int @id @default(autoincrement())
+    cribId String @map("crib_id")
+    coldThreshold Float @map("cold_threshold")
+    warmThreshold Float @map("warm_threshold")
+    fanAutoMode Boolean @map("fan_auto_mode")
+    fanSpeed Int @map("fan_speed")
+    createdAt DateTime @map("created_at")
+    @@map("settings")
+}
+
+model Notifications {
+    id Int @id @default(autoincrement())
+    cribId String @map("crib_id")
+    type String
+    extra String
+    createdAt DateTime @map("created_at")
+    @@map("notifications")
+}
