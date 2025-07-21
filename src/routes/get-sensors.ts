@@ -16,19 +16,19 @@ export const getSensors: FastifyPluginCallbackZod = (app) => {
       const { cribId } = req.params
 
       try {
-        const latestSensorsResult = await prisma.sensors.findFirst({
-          where: { cribId: cribId },
-          orderBy: { createdAt: 'desc' }
+        const lastSensorsStatus = await prisma.sensors.findFirst({
+          where: { cribId },
+          orderBy: { id: 'desc' }
         })
 
-        if (!latestSensorsResult) {
-          return res.status(404).send({ error: 'No Sensors Data found for this Crib ID!' })
+        if (!lastSensorsStatus) {
+          return res.status(404).send({ error: 'No Sensors Status found for this Crib ID!' })
         }
 
-        return res.status(200).send(latestSensorsResult)
+        return res.status(200).send(lastSensorsStatus)
       } catch (err) {
         return res.status(500).send({
-          error: 'Failed to insert Data!'
+          error: 'Internal Server Error, Failed to Get Sensors Status!'
         })
       }
     }

@@ -33,7 +33,7 @@ export const sendData: FastifyPluginCallbackZod = (app) => {
       const createdAt = new Date()
 
       try {
-        const sensorsResult = await prisma.sensors.create({
+        const newSensorsStatus = await prisma.sensors.create({
           data: {
             cribId,
             tempSensorStatus,
@@ -42,7 +42,8 @@ export const sendData: FastifyPluginCallbackZod = (app) => {
             createdAt
           }
         })
-        const measuresResult = await prisma.measures.create({
+
+        const newMeasures = await prisma.measures.create({
           data: {
             cribId,
             temperature,
@@ -51,15 +52,14 @@ export const sendData: FastifyPluginCallbackZod = (app) => {
             createdAt
           }
         })
-  
+
         return res.status(201).send({
-          cribId,
-          sensorsResult,
-          measuresResult
+          newSensorsStatus,
+          newMeasures
         })
       } catch (err) {
         return res.status(500).send({
-          error: 'Failed to insert Data!'
+          error: 'Internal Server Error, Failed to Insert Data!'
         })
       }
     }
