@@ -7,13 +7,21 @@ datasource db {
     url = env("DATABASE_URL")
 }
 
+model Cribs {
+  id Int @id @default(autoincrement())
+  cribId String @map("crib_id")
+  cribName String @map("crib_name")
+  createdAt DateTime @default(now()) @map("created_at")
+  @@map("cribs")
+}
+
 model Sensors {
     id Int @id @default(autoincrement())
     cribId String @map("crib_id")
     tempSensorStatus Boolean @map("temp_sensor_status")
     movSensorStatus Boolean @map("mov_sensor_status")
     noiseSensorStatus Boolean @map("noise_sensor_status")
-    createdAt DateTime @map("created_at")
+    createdAt DateTime @default(now()) @map("created_at")
     @@map("sensors")
 }
 
@@ -23,7 +31,7 @@ model Measures {
     temperature Float
     movement Boolean
     noise Int
-    createdAt DateTime @map("created_at")
+    createdAt DateTime @default(now()) @map("created_at")
     @@map("measures")
 }
 
@@ -34,7 +42,7 @@ model Settings {
     warmThreshold Float @map("warm_threshold")
     fanAutoMode Boolean @map("fan_auto_mode")
     fanSpeed Int @map("fan_speed")
-    createdAt DateTime @map("created_at")
+    createdAt DateTime @default(now()) @map("created_at")
     @@map("settings")
 }
 
@@ -43,6 +51,6 @@ model Notifications {
     cribId String @map("crib_id")
     type String
     extra String
-    createdAt DateTime @map("created_at")
+    createdAt DateTime @default(now()) @map("created_at")
     @@map("notifications")
 }
