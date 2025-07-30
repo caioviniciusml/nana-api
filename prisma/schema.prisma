@@ -9,7 +9,7 @@ datasource db {
 
 model Cribs {
   id Int @id @default(autoincrement())
-  cribId String @map("crib_id")
+  cribId String @unique @map("crib_id")
   cribName String @map("crib_name")
   createdAt DateTime @default(now()) @map("created_at")
   @@map("cribs")
@@ -50,7 +50,7 @@ model Notifications {
     id Int @id @default(autoincrement())
     cribId String @map("crib_id")
     type String
-    extra String
+    extra String?
     createdAt DateTime @default(now()) @map("created_at")
     @@map("notifications")
 }
