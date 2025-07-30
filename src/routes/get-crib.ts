@@ -8,7 +8,7 @@ export const getCrib: FastifyPluginCallbackZod = (app) => {
     {
       schema: {
         params: z.object({
-          cribId: z.string()
+          cribId: z.uuidv4()
         }),
       }
     },
@@ -16,18 +16,23 @@ export const getCrib: FastifyPluginCallbackZod = (app) => {
       const { cribId } = req.params
 
       try {
-        const crib = await prisma.cribs.findFirst({
+        const crib = await prisma.cribs.findUnique({
+          select: {
+            cribId: true,
+            cribName: true,
+            createdAt: true
+          },
           where: { cribId }
         })
 
         if (!crib) {
-          return res.status(404).send({ error: 'No Crib Data found for this Crib ID!' })
+          return res.status(404).send({ error: 'No Crib Data Found for This Crib ID' })
         }
 
         return res.status(200).send(crib)
       } catch (err) {
         return res.status(500).send({
-          error: 'Internal Server Error, Failed to Get Crib Data!'
+          error: 'Internal Server Error, Failed to Get Crib Data'
         })
       }
     }
