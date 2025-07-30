@@ -1,56 +1,62 @@
 generator client {
-    provider = "prisma-client-js"
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
     provider = "postgresql"
-    url = env("DATABASE_URL")
+    url      = env("DATABASE_URL")
 }
 
 model Cribs {
-  id Int @id @default(autoincrement())
-  cribId String @unique @map("crib_id")
-  cribName String @map("crib_name")
-  createdAt DateTime @default(now()) @map("created_at")
-  @@map("cribs")
+    id        Int      @id @default(autoincrement())
+    cribId    String   @unique @map("crib_id")
+    cribName  String   @map("crib_name")
+    createdAt DateTime @default(now()) @map("created_at")
+
+    @@map("cribs")
 }
 
 model Sensors {
-    id Int @id @default(autoincrement())
-    cribId String @map("crib_id")
-    tempSensorStatus Boolean @map("temp_sensor_status")
-    movSensorStatus Boolean @map("mov_sensor_status")
-    noiseSensorStatus Boolean @map("noise_sensor_status")
-    createdAt DateTime @default(now()) @map("created_at")
+    id                Int      @id @default(autoincrement())
+    cribId            String   @map("crib_id")
+    tempSensorStatus  Boolean  @map("temp_sensor_status")
+    movSensorStatus   Boolean  @map("mov_sensor_status")
+    noiseSensorStatus Boolean  @map("noise_sensor_status")
+    createdAt         DateTime @default(now()) @map("created_at")
+
     @@map("sensors")
 }
 
 model Measures {
-    id Int @id @default(autoincrement())
-    cribId String @map("crib_id")
+    id          Int      @id @default(autoincrement())
+    cribId      String   @map("crib_id")
     temperature Float
-    movement Boolean
-    noise Int
-    createdAt DateTime @default(now()) @map("created_at")
+    movement    Boolean
+    noise       Int
+    createdAt   DateTime @default(now()) @map("created_at")
+
     @@map("measures")
 }
 
 model Settings {
-    id Int @id @default(autoincrement())
-    cribId String @map("crib_id")
-    coldThreshold Float @map("cold_threshold")
-    warmThreshold Float @map("warm_threshold")
-    fanAutoMode Boolean @map("fan_auto_mode")
-    fanSpeed Int @map("fan_speed")
-    createdAt DateTime @default(now()) @map("created_at")
+    id            Int      @id @default(autoincrement())
+    cribId        String   @map("crib_id")
+    coldThreshold Float    @map("cold_threshold")
+    warmThreshold Float    @map("warm_threshold")
+    fanAutoMode   Boolean  @map("fan_auto_mode")
+    fanSpeed      Int      @map("fan_speed")
+    createdAt     DateTime @default(now()) @map("created_at")
+
     @@map("settings")
 }
 
 model Notifications {
-    id Int @id @default(autoincrement())
-    cribId String @map("crib_id")
-    type String
-    extra String?
+    id        Int      @id @default(autoincrement())
+    cribId    String   @map("crib_id")
+    type      String
+    extra     String?
     createdAt DateTime @default(now()) @map("created_at")
+
     @@map("notifications")
 }
