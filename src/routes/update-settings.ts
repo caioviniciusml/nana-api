@@ -8,7 +8,7 @@ export const updateSettings: FastifyPluginCallbackZod = (app) => {
     {
       schema: {
         params: z.object({
-          cribId: z.string()
+          cribId: z.uuidv4()
         }),
         body: z.object({
           coldThreshold: z.number(),
@@ -23,8 +23,16 @@ export const updateSettings: FastifyPluginCallbackZod = (app) => {
       const { coldThreshold, warmThreshold, fanAutoMode, fanSpeed } = req.body
 
       try {
-        if (coldThreshold >= warmThreshold){
-          return res.status(400).send({ error: 'Bad Request, Cold Threshold must be lower than Warm Threshold!'})
+        const crib = await prisma.cribs.findUnique({
+          where: { cribId }
+        })
+
+        if (!crib) {
+          return res.status(404).send({ error: "This Crib Doesn't Exists" })
+        }
+
+        if (coldThreshold >= warmThreshold) {
+          return res.status(400).send({ error: 'Cold Threshold must be Lower than Warm Threshold' })
         }
 
         const settings = await prisma.settings.create({
@@ -40,7 +48,7 @@ export const updateSettings: FastifyPluginCallbackZod = (app) => {
         return res.status(201).send(settings)
       } catch (err) {
         return res.status(500).send({
-          error: 'Internal Server Error, Failed to Update Settings!'
+          error: 'Internal Server Error, Failed to Update Settings'
         })
       }
     }

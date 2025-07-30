@@ -8,8 +8,8 @@ export const getNotifications: FastifyPluginCallbackZod = (app) => {
     {
       schema: {
         params: z.object({
-          cribId: z.string()
-        }),
+          cribId: z.uuidv4()
+        })
       }
     },
     async (req, res) => {
@@ -17,17 +17,19 @@ export const getNotifications: FastifyPluginCallbackZod = (app) => {
 
       try {
         const notifications = await prisma.notifications.findMany({
-          where: { cribId }
+          where: { cribId },
+          orderBy: { id: 'desc' },
+          take: 20
         })
 
-        if (!notifications) {
-          return res.status(404).send({ error: 'No Notifications found for this Crib ID!' })
+        if (notifications.length === 0) {
+          return res.status(404).send({ error: 'No Notifications found for this Crib ID' })
         }
 
         return res.status(200).send(notifications)
       } catch (err) {
         return res.status(500).send({
-          error: 'Internal Server Error, Failed to Get Notifications!'
+          error: 'Internal Server Error, Failed to Get Notifications'
         })
       }
     }

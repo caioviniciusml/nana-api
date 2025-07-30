@@ -8,7 +8,7 @@ export const getTemperatures: FastifyPluginCallbackZod = (app) => {
     {
       schema: {
         params: z.object({
-          cribId: z.string()
+          cribId: z.uuidv4()
         }),
       }
     },
@@ -17,22 +17,22 @@ export const getTemperatures: FastifyPluginCallbackZod = (app) => {
 
       try {
         const temperatures = await prisma.measures.findMany({
-          select: { 
+          select: {
             id: true,
-            temperature: true, 
+            temperature: true,
             createdAt: true,
           },
           where: { cribId }
         })
 
-        if (!temperatures) {
-          return res.status(404).send({ error: 'No Temperatures found for this Crib ID!' })
+        if (temperatures.length === 0) {
+          return res.status(404).send({ error: 'No Temperatures Data Found for This Crib ID' })
         }
 
         return res.status(200).send(temperatures)
       } catch (err) {
         return res.status(500).send({
-          error: 'Internal Server Error, Failed to Get Temperatures!'
+          error: 'Internal Server Error, Failed to Get Temperatures Data'
         })
       }
     }

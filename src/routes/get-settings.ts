@@ -8,7 +8,7 @@ export const getSettings: FastifyPluginCallbackZod = (app) => {
     {
       schema: {
         params: z.object({
-          cribId: z.string()
+          cribId: z.uuidv4()
         }),
       }
     },
@@ -22,13 +22,13 @@ export const getSettings: FastifyPluginCallbackZod = (app) => {
         })
 
         if (!lastSettings) {
-          return res.status(404).send({ error: 'No Settings found for this Crib ID!' })
+          return res.status(404).send({ error: 'No Settings Found for This Crib ID' })
         }
 
         return res.status(200).send(lastSettings)
       } catch (err) {
         return res.status(500).send({
-          error: 'Internal Server Error, Failed to Get Settings!'
+          error: 'Internal Server Error, Failed to Get Settings'
         })
       }
     }
