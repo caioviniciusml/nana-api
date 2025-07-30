@@ -8,7 +8,7 @@ export const getNoises: FastifyPluginCallbackZod = (app) => {
     {
       schema: {
         params: z.object({
-          cribId: z.string()
+          cribId: z.uuidv4()
         }),
       }
     },
@@ -17,22 +17,22 @@ export const getNoises: FastifyPluginCallbackZod = (app) => {
 
       try {
         const noises = await prisma.measures.findMany({
-          select: { 
+          select: {
             id: true,
-            noise: true, 
+            noise: true,
             createdAt: true,
           },
           where: { cribId }
         })
 
-        if (!noises) {
-          return res.status(404).send({ error: 'No Noise Levels found for this Crib ID!' })
+        if (noises.length === 0) {
+          return res.status(404).send({ error: 'No Noise Data Found for This Crib ID' })
         }
 
         return res.status(200).send(noises)
       } catch (err) {
         return res.status(500).send({
-          error: 'Internal Server Error, Failed to Get Noise Levels!'
+          error: 'Internal Server Error, Failed to Get Noise Data'
         })
       }
     }
