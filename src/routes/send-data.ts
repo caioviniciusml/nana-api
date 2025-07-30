@@ -1,6 +1,7 @@
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import { z } from 'zod/v4'
 import { prisma } from '../db/connection.ts'
+import { handleNotifications } from '../models/notifications-model.ts'
 
 export const sendData: FastifyPluginCallbackZod = (app) => {
   app.post(
@@ -8,7 +9,7 @@ export const sendData: FastifyPluginCallbackZod = (app) => {
     {
       schema: {
         params: z.object({
-          cribId: z.string()
+          cribId: z.uuidv4()
         }),
         body: z.object({
           tempSensorStatus: z.boolean(),
@@ -33,6 +34,14 @@ export const sendData: FastifyPluginCallbackZod = (app) => {
       const createdAt = new Date()
 
       try {
+        const crib = await prisma.cribs.findUnique({
+          where: { cribId }
+        })
+
+        if (!crib) {
+          return res.status(404).send({ error: "This Crib Doesn't Exists" })
+        }
+
         const newSensorsStatus = await prisma.sensors.create({
           data: {
             cribId,
@@ -52,6 +61,8 @@ export const sendData: FastifyPluginCallbackZod = (app) => {
             createdAt
           }
         })
+
+        handleNotifications({ ...newSensorsStatus, ...newMeasures })
 
         return res.status(201).send({
           newSensorsStatus,
