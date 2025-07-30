@@ -5,15 +5,17 @@ import { env } from './env.ts'
 import { getCrib } from './routes/get-crib.ts'
 import { getSensors } from './routes/get-sensors.ts'
 import { getTemperatures } from './routes/get-temperatures.ts'
-import { getMovements } from './routes/get-movements.ts'
+import { getMovement } from './routes/get-movement.ts'
 import { getNoises } from './routes/get-noises.ts'
 import { getNotifications } from './routes/get-notifications.ts'
 import { getSettings } from './routes/get-settings.ts'
 import { createCrib } from './routes/create-crib.ts'
+import { renameCrib } from './routes/rename-crib.ts'
 import { sendData } from './routes/send-data.ts'
-import { createNotification } from './routes/create-notification.ts'
+import { sendFanData } from './routes/send-fan-data.ts'
 import { updateSettings } from './routes/update-settings.ts'
-import { updateFanSettings } from './routes/update-fan.ts'
+import { setupSettings } from './routes/setup-settings.ts'
+import { createServoNotification } from './routes/create-servo-notification.ts'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -24,21 +26,20 @@ app.register(fastifyCors, {
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
 
-app.listen({ port: env.PORT })
+app.listen({ port: env.PORT, host: '0.0.0.0' })
 
-app.get('/health', () => {
-  return 'OK'
-})
-
+app.get('/health', () => 'OK')
 app.register(getCrib)
 app.register(getSensors)
 app.register(getTemperatures)
-app.register(getMovements)
 app.register(getNoises)
-app.register(getNotifications)
+app.register(getMovement)
 app.register(getSettings)
+app.register(getNotifications)
 app.register(createCrib)
+app.register(renameCrib)
 app.register(sendData)
-app.register(createNotification)
-app.register(updateSettings)  
-app.register(updateFanSettings)
+app.register(sendFanData)
+app.register(updateSettings)
+app.register(setupSettings)
+app.register(createServoNotification)
